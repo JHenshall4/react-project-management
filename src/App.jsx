@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Sidebar from "./components/Sidebar";
 import CreateProject from "./components/CreateProject";
+import ProjectDetails from "./components/ProjectDetails";
 
 const DEFAULT_PROJECTS = [
   {
@@ -12,25 +13,54 @@ const DEFAULT_PROJECTS = [
 
 function App() {
   const [projectList, updateProjectList] = useState(DEFAULT_PROJECTS);
-  const [screenShown, setScreenShown] = useState(1);
+  const [screenShown, setScreenShown] = useState(0);
+  const [activeProject, setActiveProject] = useState({});
 
-  function handleCreateProject() {
-    updateProjectList([
-      ...projectList,
-      { title: "New Project", description: "New Desc", dueDate: "02/02/02" },
-    ]);
+  function handleCreateProject(project) {
+    if (project.title && project.description && project.dueDate) {
+      updateProjectList([
+        ...projectList,
+        {
+          title: project.title,
+          description: project.description,
+          dueDate: project.dueDate,
+          tasks: [],
+        },
+      ]);
+    }
+    // Change scene to active project.
+    setActiveProject(project);
+    handleChangeScene(2);
+  }
+
+  function handleChangeScene(num) {
+    setScreenShown(num);
+  }
+
+  function handleViewProject(num) {
+    setActiveProject(projectList[num]);
   }
 
   return (
     <>
       <main className="h-screen my-8 flex gap-8">
-        <Sidebar projects={projectList} createProject={handleCreateProject} />
+        <Sidebar
+          projects={projectList}
+          addProject={handleChangeScene}
+          viewProject={handleViewProject}
+        />
         {screenShown === 0 && (
           <h1 className="my-8 text-center text-5xl font-bold">
             No Project Selected
           </h1>
         )}
-        {screenShown === 1 && <CreateProject />}
+        {screenShown === 1 && (
+          <CreateProject
+            saveAction={handleCreateProject}
+            cancelAction={handleChangeScene}
+          />
+        )}
+        {screenShown === 2 && <ProjectDetails project={activeProject} />}
       </main>
     </>
   );

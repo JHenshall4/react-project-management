@@ -1,4 +1,4 @@
-export default function Sidebar({ projects, createProject }) {
+export default function Sidebar({ projects, addProject, viewProject }) {
   return (
     <aside
       id="sidebar"
@@ -9,12 +9,16 @@ export default function Sidebar({ projects, createProject }) {
       </h2>
       <ul className="mt-8">
         {projects.map((project, index) => {
-          return <li key={index}>{project.title}</li>;
+          return (
+            <li key={index} onClick={() => viewProject(index)}>
+              {project.title}
+            </li>
+          );
         })}
       </ul>
       <button
         className="w-full text-left px-2 py-1 rounded-sm my-1 hover:text-stone-200 hover:bg-stone-800"
-        onClick={createProject}
+        onClick={() => addProject(1)}
       >
         + Add Project
       </button>

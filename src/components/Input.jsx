@@ -1,8 +1,8 @@
 export default function Input({ label, ...props }) {
   return (
-    <label>
+    <label className="flex flex-col">
       {label}
-      <input {...props} />
+      <input {...props} className="bg-stone-300" />
     </label>
   );
 }
