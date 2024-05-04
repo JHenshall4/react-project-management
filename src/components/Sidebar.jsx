@@ -2,7 +2,8 @@ import Button from "./Button";
 export default function Sidebar({
   projects,
   createProjectScreen,
-  viewProject,
+  selectProject,
+  selectedProjectId,
 }) {
   return (
     <aside
@@ -15,13 +16,27 @@ export default function Sidebar({
       <ul className="mt-4">
         {projects &&
           projects.length > 0 &&
-          projects.map((project) => (
-            <li key={project.id} onClick={() => viewProject(index)}>
-              <button className="w-full text-left px-2 py-1 rounded-sm my-1 text-stone-400 hover:text-stone-200 hover:bg-stone-800">
-                {project.title}
-              </button>
-            </li>
-          ))}
+          projects.map((project) => {
+            let cssClasses =
+              "w-full text-left px-2 py-1 rounded-sm my-1  hover:text-stone-200 hover:bg-stone-800";
+
+            if (project.id === selectedProjectId) {
+              cssClasses += " bg-stone-800 text-stone-200";
+            } else {
+              cssClasses += " text-stone-400";
+            }
+
+            return (
+              <li key={project.id}>
+                <button
+                  onClick={() => selectProject(project.id)}
+                  className={cssClasses}
+                >
+                  {project.title}
+                </button>
+              </li>
+            );
+          })}
       </ul>
       <Button onClick={createProjectScreen}>+ Add Project</Button>
     </aside>
