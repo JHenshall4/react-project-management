@@ -1,68 +1,77 @@
 import { useState } from "react";
 import Sidebar from "./components/Sidebar";
-import CreateProject from "./components/CreateProject";
+import NewProject from "./components/NewProject";
 import ProjectDetails from "./components/ProjectDetails";
-
-const DEFAULT_PROJECTS = [
-  {
-    title: "Project 1",
-    description: "Hello, this is a test project",
-    dueDate: "01/01/01",
-  },
-];
+import DefaultScreen from "./components/DefaultScreen";
 
 function App() {
-  const [projectList, updateProjectList] = useState(DEFAULT_PROJECTS);
-  const [screenShown, setScreenShown] = useState(0);
+  const [projectList, updateProjectList] = useState({});
   const [activeProject, setActiveProject] = useState({});
+  const [projectsState, setProjectsState] = useState({
+    selectedProjectId: undefined,
+    projects: [],
+  });
 
-  function handleCreateProject(project) {
-    if (project.title && project.description && project.dueDate) {
-      updateProjectList([
-        ...projectList,
-        {
-          title: project.title,
-          description: project.description,
-          dueDate: project.dueDate,
-          tasks: [],
-        },
-      ]);
-    }
-    // Change scene to active project.
-    setActiveProject(project);
-    handleChangeScene(2);
+  function handleCreateProjectScreen() {
+    setProjectsState((prevState) => {
+      return {
+        ...prevState,
+        selectedProjectId: null,
+      };
+    });
   }
 
-  function handleChangeScene(num) {
-    setScreenShown(num);
+  function handleAddProject(projectData) {
+    setProjectsState((prevState) => {
+      const projectId = Math.random();
+      const newProject = {
+        ...projectData,
+        id: projectId,
+      };
+      return {
+        ...prevState,
+        selectedProjectId: undefined,
+        projects: [...prevState.projects, newProject],
+      };
+    });
   }
 
-  function handleViewProject(num) {
-    setActiveProject(projectList[num]);
+  function handleCancelAddProject() {
+    setProjectsState((prevState) => {
+      return {
+        ...prevState,
+        selectedProjectId: undefined,
+      };
+    });
+  }
+
+  let content;
+
+  if (projectsState.selectedProjectId === null) {
+    content = (
+      <NewProject
+        addProject={handleAddProject}
+        cancelAddProject={handleCancelAddProject}
+      />
+    );
+  } else if (projectsState.selectedProjectId === undefined) {
+    content = <DefaultScreen createProjectScreen={handleCreateProjectScreen} />;
   }
 
   return (
-    <>
-      <main className="h-screen my-8 flex gap-8">
-        <Sidebar
-          projects={projectList}
-          addProject={handleChangeScene}
-          viewProject={handleViewProject}
-        />
-        {screenShown === 0 && (
-          <h1 className="my-8 text-center text-5xl font-bold">
-            No Project Selected
-          </h1>
-        )}
-        {screenShown === 1 && (
-          <CreateProject
-            saveAction={handleCreateProject}
-            cancelAction={handleChangeScene}
-          />
-        )}
-        {screenShown === 2 && <ProjectDetails project={activeProject} />}
-      </main>
-    </>
+    <main className="h-screen my-8 flex gap-8">
+      <Sidebar
+        createProjectScreen={handleCreateProjectScreen}
+        projects={projectsState.projects}
+      />
+      {content}
+
+      {/* <ProjectDetails
+        project={activeProject}
+        addTask={handleCreateTask}
+        removeTask={handleRemoveTask}
+      /> */}
+    </main>
   );
 }
 
