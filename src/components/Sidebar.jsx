@@ -13,7 +13,7 @@ export default function Sidebar({
       <h2 className="mb-4 font-bold uppercase md:text-xl text-stone-200">
         Your Projects
       </h2>
-      <ul className="mt-4">
+      <ul className="my-4">
         {projects &&
           projects.length > 0 &&
           projects.map((project) => {

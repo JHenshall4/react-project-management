@@ -1,11 +1,18 @@
-import Input from "./Input";
+import Tasks from "./Tasks";
 
-export default function ProjectDetails({ project, addTask, removeTask }) {
-  const formattedDate = new Date(project.date).toLocaleDateString("en-AU", {
+export default function ProjectDetails({
+  project,
+  deleteProject,
+  addTask,
+  deleteTask,
+}) {
+  const formattedDate = new Date(project.dueDate).toLocaleDateString("en-AU", {
     year: "numeric",
     month: "short",
     day: "numeric",
   });
+
+  console.log(project);
 
   return (
     <div className="w-[35rem] mt-16">
@@ -17,7 +24,10 @@ export default function ProjectDetails({ project, addTask, removeTask }) {
           <h1 className="text-3xl font-bold text-stone-600 mb-2">
             {project.title}
           </h1>
-          <button className="text-stone-600 hoveR:text-stone-950">
+          <button
+            className="text-stone-600 hover:text-stone-950"
+            onClick={deleteProject}
+          >
             Delete
           </button>
         </div>
@@ -26,23 +36,8 @@ export default function ProjectDetails({ project, addTask, removeTask }) {
         <p className="text-stone-600 whitespace-pre-wrap">
           {project.description}
         </p>
-        <hr className="my-4" />
-        <h2 className="text-3xl font-bold my-2 ">Tasks</h2>
-        <div className="flex gap-10">
-          <Input
-            label="Create a new task"
-            type="text"
-            name="newTask"
-            id="newTask"
-          />
-          <button>Save</button>
-        </div>
-        <div>
-          {/* {project.tasks.map((task) => {
-            <p>{task}</p>;
-          })} */}
-        </div>
       </header>
+      <Tasks project={project} addTask={addTask} deleteTask={deleteTask} />
     </div>
   );
 }
